@@ -12,7 +12,9 @@ namespace KASM
         // Constants
         public static readonly string assetsPath = Path.Combine(KSPUtil.ApplicationRootPath, "GameData", "KASM", "Assets");
         public const string iconPath = "KASM/Assets/icon_128x128";
-        public const string debugName = "[KASM]";
+        public const string debugName = "[KASM] ";
+
+        #region Asset Bundle
 
         public static AssetBundle LoadAssetBundle(string assetBundleName)
         {
@@ -34,7 +36,7 @@ namespace KASM
 
             if (!File.Exists(path))
             {
-                Debug.LogError($"{debugName} Assetbundle {path} is missing!");
+                Error($"Assetbundle {path} is missing!");
                 return null;
             }
 
@@ -42,9 +44,11 @@ namespace KASM
 
             if (resourcesAB == null) // just to be extra safe
             {
-                Debug.LogError($"{debugName} Error when loading {path}!");
+                Error($"Error when loading {path}!");
                 return null;
             }
+
+            Log($"Successfully loaded asset bundle {assetBundleName} from {path}");
 
             return resourcesAB;
         }
@@ -53,7 +57,7 @@ namespace KASM
         {
             T asset = assetBundle.LoadAsset<T>(name);
             if (!asset)
-                Debug.LogError($"{debugName} {name} is missing in asset bundle!");
+                Error($"{debugName} {name} is missing in asset bundle!");
 
             return asset;
         }
@@ -67,5 +71,26 @@ namespace KASM
         {
             return parent.Find(targetPath).gameObject.AddComponent<T>();
         }
+
+        #endregion
+
+        #region Log
+
+        public static void Log(string message)
+        {
+            Debug.Log(debugName + message);
+        }
+
+        public static void Warning(string message)
+        {
+            Debug.LogWarning(debugName + message);
+        }
+
+        public static void Error(string message)
+        {
+            Debug.LogError(debugName + message);
+        }
+
+        #endregion
     }
 }

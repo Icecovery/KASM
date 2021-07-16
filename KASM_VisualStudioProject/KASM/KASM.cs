@@ -15,16 +15,16 @@ namespace KASM
     [KSPAddon(startup: KSPAddon.Startup.EditorAny, once: false)]
     public class KASM : MonoBehaviour
     {
-        private ApplicationLauncherButton toolbarButton;
+        private static ApplicationLauncherButton toolbarButton;
         private static RectTransform window;
 
-        private AssetBundle assetBundle;
-        private AssetBundle AssetBundle
+        private static AssetBundle assetBundle;
+        private static AssetBundle AssetBundle
         {
             get
             {
                 if (!assetBundle)
-                    assetBundle = Utilities.LoadAssetBundle("resources");
+                    assetBundle = Utilities.LoadAssetBundle("kasm_resources");
 
                 return assetBundle;
             }
@@ -37,6 +37,7 @@ namespace KASM
         private void Awake()
         {
             GameEvents.onGUIApplicationLauncherReady.Add(LoadToolbarButton);
+            GameEvents.onGUIEditorToolbarReady.Add(LoadMainUI);
         }
 
         private void LoadToolbarButton()
@@ -55,31 +56,14 @@ namespace KASM
                                                  ApplicationLauncher.AppScenes.SPH,
                                 texture: buttonIcon);
             }
-        }
 
-        private void OnEditorEnable()
-        {
-            toolbarButton.SetTexture(GameDatabase.Instance.GetTexture(Utilities.iconPath, false));
-            Debug.Log(Utilities.debugName + "Editor Enable");
-
-            if (window)
+            if (toolbarButton)
             {
-                window.gameObject.SetActive(true);
+                OnEditorDisable();
             }
         }
 
-        private void OnEditorDisable()
-        {
-            toolbarButton.SetTexture(GameDatabase.Instance.GetTexture(Utilities.iconPath + "_disable", false));
-            Debug.Log(Utilities.debugName + "Editor Disable");
-
-            if (window)
-            {
-                window.gameObject.SetActive(false);
-            }
-        }
-
-        private void Update()
+        private void LoadMainUI()
         {
             if (!window)
             {
@@ -101,8 +85,30 @@ namespace KASM
                     Utilities.AddComponentOnChild<DragWindow>(window.transform, "Panel/TitleBar");
                     Utilities.AddComponentOnChild<ScaleWindow>(window.transform, "Panel/ScaleButton");
 
-                    Debug.Log(Utilities.debugName + "Canvas setup done");
+                    Utilities.Log("Canvas setup done");
                 }
+            }
+        }
+
+        private void OnEditorEnable()
+        {
+            toolbarButton.SetTexture(GameDatabase.Instance.GetTexture(Utilities.iconPath, false));
+            Utilities.Log("Editor Enable");
+
+            if (window)
+            {
+                window.gameObject.SetActive(true);
+            }
+        }
+
+        private void OnEditorDisable()
+        {
+            toolbarButton.SetTexture(GameDatabase.Instance.GetTexture(Utilities.iconPath + "_disable", false));
+            Utilities.Log("Editor Disable");
+
+            if (window)
+            {
+                window.gameObject.SetActive(false);
             }
         }
     }

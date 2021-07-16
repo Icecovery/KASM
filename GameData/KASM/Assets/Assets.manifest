@@ -1,7 +1,7 @@
 ManifestFileVersion: 0
-CRC: 4115278622
+CRC: 1045086980
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
-      Name: resources_linux64.assetbundle
+      Name: kasm_resources_win64.assetbundle
       Dependencies: {}

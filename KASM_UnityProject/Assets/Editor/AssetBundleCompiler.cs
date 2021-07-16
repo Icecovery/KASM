@@ -1,24 +1,24 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using System.Collections;
+using System.IO;
 
 public class AssetBundleCompiler
 {
     [MenuItem("Tools/Build Selected AssetBundle")]
     static void BuildAssetBundleWin64()
     {
-        string path = EditorUtility.SaveFilePanel("Build Asset Bundle", "Assets", "resources", "assetbundle");
-        
-        ExportAssetBundle(BuildTarget.StandaloneWindows64, path);
-        ExportAssetBundle(BuildTarget.StandaloneOSX, path);
-        ExportAssetBundle(BuildTarget.StandaloneLinux64, path);
-    }
+        string path = EditorUtility.SaveFilePanel("Build Asset Bundle", Path.Combine("..", "GameData", "KASM", "Assets"), "KASM_resources", "assetbundle");
 
+        ExportAssetBundle(BuildTarget.StandaloneWindows64, path);
+        //TODO Uncomment these lines on the final build
+        //ExportAssetBundle(BuildTarget.StandaloneOSX, path);
+        //ExportAssetBundle(BuildTarget.StandaloneLinux64, path);
+    }
 
     private static void ExportAssetBundle(BuildTarget target, string path)
     {
-        string name = System.IO.Path.GetFileNameWithoutExtension(path);
-        string directory = System.IO.Path.GetDirectoryName(path);
+        string name = Path.GetFileNameWithoutExtension(path);
+        string directory = Path.GetDirectoryName(path);
         Object[] selection = Selection.GetFiltered(typeof(Object), SelectionMode.DeepAssets);
         AssetBundleBuild build = new AssetBundleBuild();
 
@@ -47,9 +47,6 @@ public class AssetBundleCompiler
             MonoBehaviour.print("Building asset: " + build.assetNames[i]);
         }
         BuildPipeline.BuildAssetBundles(directory, new AssetBundleBuild[] { build }, BuildAssetBundleOptions.None, target);
-        
-        //MonoBehaviour.print("Renaming from: " + path + " to: " + path.Replace(".assetbundle", ""));
-        //System.IO.File.Move(path, path.Replace(".assetbundle", ""));
     }
 
 }
