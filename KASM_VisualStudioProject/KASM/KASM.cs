@@ -73,17 +73,33 @@ namespace KASM
                     window = Instantiate(Utilities.SafeLoadFromAssetBundle<GameObject>(AssetBundle, "Window")).GetComponent<RectTransform>();
 
                     // set parent to app canvas
-                    window.transform.SetParent(UIMasterController.Instance.appCanvas.transform);
+                    Canvas appCanvas = UIMasterController.Instance.appCanvas;
+                    window.transform.SetParent(appCanvas.transform);
                     window.transform.localScale = Vector3.one;
                     window.transform.localPosition = Vector3.zero;
-                    window.anchoredPosition -= window.rect.size * new Vector2(0.5f, -0.5f) / UIMasterController.Instance.appCanvas.scaleFactor;
+                    window.anchoredPosition -= window.rect.size * new Vector2(0.5f, -0.5f) / appCanvas.scaleFactor;
 
                     window.gameObject.SetActive(false);
 
                     // === window setup ===
-                    Utilities.AddComponentOnChild<DragWindow>(window.transform, "TitleBar");
-                    Utilities.AddComponentOnChild<ScaleWindow>(window.transform, "ScaleButton");
+                    DragWindow dragWindow = Utilities.AddComponentOnChild<DragWindow>(window.transform, "TitleBar");
+                    dragWindow.canvas = appCanvas;
+                    dragWindow.windowTransform = window;
+
+                    ScaleWindow scaleWindow = Utilities.AddComponentOnChild<ScaleWindow>(window.transform, "ScaleButton");
+                    scaleWindow.canvas = appCanvas;
+                    scaleWindow.windowTransform = window;
+
                     Utilities.GetComponentOnChild<Button>(window.transform, "TitleBar/CloseButton").onClick.AddListener(delegate { toolbarButton.SetFalse(); });
+
+                    ResizePanel resizePanel = Utilities.AddComponentOnChild<ResizePanel>(window.transform, "SidePanel/ResizeBar");
+                    resizePanel.canvas = appCanvas;
+                    resizePanel.pannel = Utilities.GetComponentOnChild<RectTransform>(window.transform, "SidePanel");
+
+                    ProcessorEditor processorEditor = window.gameObject.AddComponent<ProcessorEditor>();
+                    processorEditor.nodePanelTemplate = Utilities.GetComponentOnChild<Transform>(window.transform, "SidePanel/Scroll View/Viewport/Content/Template").gameObject;
+
+                    Utilities.GetComponentOnChild<InputField>(window.transform, "SidePanel/SearchBar").onValueChanged.AddListener(processorEditor.NodePanelSearch);
 
                     // === eo window setup ===
 

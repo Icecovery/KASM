@@ -71,6 +71,8 @@
     <Compile Include="KASM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UIScript\DragWindow.cs" />
+    <Compile Include="UIScript\ProcessorEditor.cs" />
+    <Compile Include="UIScript\ResizePanel.cs" />
     <Compile Include="UIScript\ScaleWindow.cs" />
     <Compile Include="UIScript\TestClass.cs" />
     <Compile Include="Utilities.cs" />
