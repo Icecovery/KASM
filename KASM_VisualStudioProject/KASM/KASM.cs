@@ -46,8 +46,8 @@ namespace KASM
             {
                 Texture buttonIcon = GameDatabase.Instance.GetTexture(Utilities.iconPath + "_disable", false);
                 toolbarButton = ApplicationLauncher.Instance.AddModApplication(
-                                onTrue: OnEditorEnable,
-                                onFalse: OnEditorDisable,
+                                onTrue: OnEditorTrue,
+                                onFalse: OnEditorFalse,
                                 onHover: null,
                                 onHoverOut: null,
                                 onEnable: null,
@@ -59,7 +59,7 @@ namespace KASM
 
             if (toolbarButton)
             {
-                OnEditorDisable();
+                toolbarButton.SetFalse();
             }
         }
 
@@ -69,28 +69,30 @@ namespace KASM
             {
                 if (UIMasterController.Instance)
                 {
-                    GameObject mainUI = Utilities.SafeLoadFromAssetBundle<GameObject>(AssetBundle, "MainUI");
+                    // load window prefab
+                    window = Instantiate(Utilities.SafeLoadFromAssetBundle<GameObject>(AssetBundle, "Window")).GetComponent<RectTransform>();
 
-                    window = Instantiate(mainUI).GetComponent<RectTransform>();
+                    // set parent to app canvas
+                    window.transform.SetParent(UIMasterController.Instance.appCanvas.transform);
+                    window.transform.localScale = Vector3.one;
+                    window.transform.localPosition = Vector3.zero;
+                    window.anchoredPosition -= window.rect.size * new Vector2(0.5f, -0.5f) / UIMasterController.Instance.appCanvas.scaleFactor;
+
                     window.gameObject.SetActive(false);
 
-                    Canvas canvas = window.GetComponent<Canvas>();
-                    canvas.worldCamera = UIMasterController.Instance.appCanvas.worldCamera;
-                    canvas.planeDistance = 625;
+                    // === window setup ===
+                    Utilities.AddComponentOnChild<DragWindow>(window.transform, "TitleBar");
+                    Utilities.AddComponentOnChild<ScaleWindow>(window.transform, "ScaleButton");
+                    Utilities.GetComponentOnChild<Button>(window.transform, "TitleBar/CloseButton").onClick.AddListener(delegate { toolbarButton.SetFalse(); });
 
-                    TestClass testClass = window.gameObject.AddComponent<TestClass>();
-                    testClass.text = Utilities.GetComponentOnChild<Text>(window.transform, "Panel/Text_target");
-                    Utilities.GetComponentOnChild<Button>(window.transform, "Panel/Button_target").onClick.AddListener(testClass.OnPress);
+                    // === eo window setup ===
 
-                    Utilities.AddComponentOnChild<DragWindow>(window.transform, "Panel/TitleBar");
-                    Utilities.AddComponentOnChild<ScaleWindow>(window.transform, "Panel/ScaleButton");
-
-                    Utilities.Log("Canvas setup done");
+                    Utilities.Log("Window setup done");
                 }
             }
         }
 
-        private void OnEditorEnable()
+        private void OnEditorTrue()
         {
             toolbarButton.SetTexture(GameDatabase.Instance.GetTexture(Utilities.iconPath, false));
             Utilities.Log("Editor Enable");
@@ -101,7 +103,7 @@ namespace KASM
             }
         }
 
-        private void OnEditorDisable()
+        private void OnEditorFalse()
         {
             toolbarButton.SetTexture(GameDatabase.Instance.GetTexture(Utilities.iconPath + "_disable", false));
             Utilities.Log("Editor Disable");

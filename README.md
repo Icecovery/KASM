@@ -27,3 +27,5 @@ I don't know, it could be any of the following:
 KASM is distributed under [MIT License](https://github.com/Icecovery/KASM/blob/master/LICENSE).
 
 Font used in banner and icon: [Tiny by Matthew Welch](https://squaregear.net/fonts/).
+
+Font used in UI: [Roboto Mono by Christian Robertson](https://fonts.google.com/specimen/Roboto+Mono).

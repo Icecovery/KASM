@@ -41,7 +41,7 @@ namespace KASM
             }
         }
 
-        public Vector2 minSize = new Vector2(100, 100);
+        public Vector2 minSize = new Vector2(400, 400);
 
         public void OnDrag(PointerEventData eventData)
         {

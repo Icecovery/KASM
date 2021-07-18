@@ -62,6 +62,10 @@ namespace KASM
             return asset;
         }
 
+        #endregion
+
+        #region Component Methods
+
         public static T GetComponentOnChild<T>(Transform parent, string targetPath)
         {
             return parent.Find(targetPath).gameObject.GetComponent<T>();

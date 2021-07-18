@@ -14,7 +14,7 @@ public class GetSelectionPathTool
         while (target.parent != null)
         {
             target = target.parent;
-            if (target.gameObject.name == "MainUI")
+            if (target.gameObject.name == "Window")
                 break;
             path = target.name + "/" + path;
         }
